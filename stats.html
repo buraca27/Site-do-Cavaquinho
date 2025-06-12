@@ -1,8 +1,8 @@
 <!DOCTYPE html>
 <html lang="pt">
-<head>
-  <meta charset="UTF-8">
-  <title>Estatísticas do Bot do Cavaquinho</title>
+  <head>
+    <meta charset="UTF-8" />
+    <title>Estatísticas do Bot do Cavaquinho</title>
     <style>
       body {
         font-family: Arial, sans-serif;
@@ -46,16 +46,50 @@
         text-decoration: underline;
       }
     </style>
+  </head>
+  <body>
+    <div class="info">
+      <p>
+        <b>Total de pontos distribuídos:</b> <span id="totalPontos">?</span>
+      </p>
+      <p><b>Apostas feitas:</b> <span id="apostas">?</span></p>
+      <p><b>Preço Certo ganhos:</b> <span id="precoCerto">?</span></p>
+      <p style="color: #888">(Estatísticas atualizadas pelo bot)</p>
+    </div>
+    <p><a href="index.html">← Voltar à página inicial</a></p>
 
-</head>
-<body>
-  <h1>📈 Estatísticas do Canal</h1>
-  <div class="info">
-    <p><b>Total de pontos distribuídos:</b> <span id="totalPontos">?</span></p>
-    <p><b>Apostas feitas:</b> <span id="apostas">?</span></p>
-    <p><b>Preço Certo ganhos:</b> <span id="precoCerto">?</span></p>
-    <p style="color:#888;">(Estatísticas atualizadas pelo bot)</p>
-  </div>
-  <p><a href="index.html">← Voltar à página inicial</a></p>
-</body>
+    <!-- Firebase SDKs -->
+    <script type="module">
+      import { initializeApp } from "https://www.gstatic.com/firebasejs/10.11.1/firebase-app.js";
+      import {
+        getFirestore,
+        doc,
+        getDoc,
+      } from "https://www.gstatic.com/firebasejs/10.11.1/firebase-firestore.js";
+
+      const firebaseConfig = {
+        apiKey: "AIzaSyDuMS9GHD3_zQQa5cRMUuA1YA5cjegoGDM",
+        authDomain: "bot-cavaquinho.firebaseapp.com",
+        projectId: "bot-cavaquinho",
+      };
+
+      const app = initializeApp(firebaseConfig);
+      const db = getFirestore(app);
+
+      async function carregarStats() {
+        const statsRef = doc(db, "stats", "global");
+        const statsSnap = await getDoc(statsRef);
+        if (statsSnap.exists()) {
+          const stats = statsSnap.data();
+          document.getElementById("totalPontos").textContent =
+            stats.totalPontos ?? "0";
+          document.getElementById("apostas").textContent = stats.apostas ?? "0";
+          document.getElementById("precoCerto").textContent =
+            stats.precoCerto ?? "0";
+        }
+      }
+
+      carregarStats();
+    </script>
+  </body>
 </html>

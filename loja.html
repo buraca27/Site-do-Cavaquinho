@@ -1,8 +1,8 @@
 <!DOCTYPE html>
 <html lang="pt">
-<head>
-  <meta charset="UTF-8">
-  <title>Loja do Bot do Cavaquinho</title>
+  <head>
+    <meta charset="UTF-8" />
+    <title>Loja do Bot do Cavaquinho</title>
     <style>
       body {
         font-family: Arial, sans-serif;
@@ -46,16 +46,73 @@
         text-decoration: underline;
       }
     </style>
+  </head>
+  <body>
+    <h1>🛒 Loja</h1>
+    <table>
+      <tr>
+        <th>Produto</th>
+        <th>Preço</th>
+      </tr>
+      <tr>
+        <td>Exemplo 1</td>
+        <td>100 pontos</td>
+      </tr>
+      <tr>
+        <td>Exemplo 2</td>
+        <td>250 pontos</td>
+      </tr>
+      <!-- Preenche manualmente ou automatiza depois -->
+    </table>
+    <p><a href="index.html">← Voltar à página inicial</a></p>
 
-</head>
-<body>
-  <h1>🛒 Loja</h1>
-  <table>
-    <tr><th>Produto</th><th>Preço</th></tr>
-    <tr><td>Exemplo 1</td><td>100 pontos</td></tr>
-    <tr><td>Exemplo 2</td><td>250 pontos</td></tr>
-    <!-- Preenche manualmente ou automatiza depois -->
-  </table>
-  <p><a href="index.html">← Voltar à página inicial</a></p>
-</body>
+    <!-- ...restante do HTML... -->
+    <table id="shopTable">
+      <tr>
+        <th>Produto</th>
+        <th>Preço</th>
+      </tr>
+      <!-- Os produtos vão aparecer aqui -->
+    </table>
+    <p><a href="index.html">← Voltar à página inicial</a></p>
+
+    <!-- Firebase SDKs -->
+    <script type="module">
+      // Configuração do Firebase Web SDK
+      import { initializeApp } from "https://www.gstatic.com/firebasejs/10.11.1/firebase-app.js";
+      import {
+        getFirestore,
+        collection,
+        query,
+        where,
+        getDocs,
+      } from "https://www.gstatic.com/firebasejs/10.11.1/firebase-firestore.js";
+
+      const firebaseConfig = {
+        apiKey: "AIzaSyDuMS9GHD3_zQQa5cRMUuA1YA5cjegoGDM",
+        authDomain: "bot-cavaquinho.firebaseapp.com",
+        projectId: "bot-cavaquinho",
+      };
+
+      const app = initializeApp(firebaseConfig);
+      const db = getFirestore(app);
+
+      async function carregarLoja() {
+        const q = query(
+          collection(db, "shop"),
+          where("enabled", "in", [true, null])
+        );
+        const shopSnapshot = await getDocs(q);
+        const table = document.getElementById("shopTable");
+        shopSnapshot.forEach((doc) => {
+          const data = doc.data();
+          const row = document.createElement("tr");
+          row.innerHTML = `<td>${data.product}</td><td>${data.price} pontos</td>`;
+          table.appendChild(row);
+        });
+      }
+
+      carregarLoja();
+    </script>
+  </body>
 </html>
