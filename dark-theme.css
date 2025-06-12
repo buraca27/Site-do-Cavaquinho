@@ -7,10 +7,17 @@
   --twitch-error: #ff4b4b;
 }
 
+* {
+  box-sizing: border-box;
+}
+
 html, body {
   height: 100%;
   margin: 0;
   padding: 0;
+  width: 100%;
+  overflow-x: hidden;
+  font-size: clamp(14px, 2.5vw, 18px);
 }
 
 body {
@@ -26,14 +33,13 @@ body {
 
 @keyframes fadeIn {
   from { opacity: 0; }
-  to   { opacity: 1; }
+  to { opacity: 1; }
 }
 
 h1 {
   color: var(--twitch-purple);
   text-align: center;
   margin-top: 2rem;
-  letter-spacing: 1px;
   font-size: 2.2rem;
   text-shadow: 0 2px 12px #0008;
   animation: slideDown 0.8s;
@@ -60,19 +66,25 @@ a:hover {
   justify-content: center;
   gap: 1.2rem;
   margin: 2rem 0;
-  font-size: 1.1rem;
+}
+
+.table-wrapper {
+  overflow-x: auto;
+  width: 100%;
+  margin: 1rem 0;
 }
 
 table {
   border-collapse: collapse;
   width: 95%;
   max-width: 700px;
-  margin: 2rem auto;
+  margin: 0 auto;
   background: rgba(24,24,27,0.95);
   border-radius: 14px;
-  overflow: hidden;
   box-shadow: 0 4px 32px #0006;
   animation: fadeIn 1.2s;
+  overflow-x: auto;
+  display: block;
 }
 
 th, td {
@@ -80,6 +92,8 @@ th, td {
   padding: 14px 12px;
   text-align: left;
   font-size: 1rem;
+  word-break: break-word;
+  white-space: normal;
 }
 
 th {
@@ -116,14 +130,12 @@ tr:hover {
 
 .admin-box {
   text-align: center;
-  margin: 2rem 0 0 0;
   background: rgba(24,24,27,0.7);
   padding: 1.2rem 1rem;
   border-radius: 10px;
   box-shadow: 0 2px 12px #0004;
   max-width: 350px;
-  margin-left: auto;
-  margin-right: auto;
+  margin: 2rem auto 0 auto;
   animation: fadeIn 1.3s;
 }
 .admin-box input[type="password"] {
@@ -133,7 +145,6 @@ tr:hover {
   background: #232347;
   color: #fff;
   margin-right: 8px;
-  transition: border 0.2s;
 }
 .admin-box input[type="password"]:focus {
   border: 1.5px solid var(--twitch-purple);
@@ -147,18 +158,10 @@ tr:hover {
   color: #fff;
   font-weight: bold;
   cursor: pointer;
-  margin-left: 8px;
-  transition: background 0.2s, color 0.2s;
 }
 .admin-box button:hover {
   background: var(--twitch-accent);
   color: #18181b;
-}
-.admin-box .error {
-  color: var(--twitch-error);
-  margin-top: 8px;
-  display: block;
-  font-size: 0.97em;
 }
 
 .info {
@@ -168,7 +171,6 @@ tr:hover {
   margin: 2rem auto 1rem auto;
   max-width: 400px;
   box-shadow: 0 2px 12px #0004;
-  animation: fadeIn 1.1s;
 }
 
 .searchbar {
@@ -184,7 +186,6 @@ tr:hover {
   background: #232347;
   color: #fff;
   width: 200px;
-  transition: border 0.2s;
 }
 .searchbar input:focus {
   border: 1.5px solid var(--twitch-purple);
@@ -198,17 +199,10 @@ tr:hover {
   color: #fff;
   font-weight: bold;
   cursor: pointer;
-  transition: background 0.2s, color 0.2s;
 }
 .searchbar button:hover {
   background: var(--twitch-accent);
   color: #18181b;
-}
-
-.notfound {
-  color: var(--twitch-error);
-  text-align: center;
-  margin-bottom: 1rem;
 }
 
 .user-stats-modal {
@@ -219,7 +213,6 @@ tr:hover {
   z-index: 1000;
   align-items: center;
   justify-content: center;
-  animation: fadeIn 0.5s;
 }
 .user-stats-modal[style*="flex"] {
   display: flex !important;
@@ -234,11 +227,6 @@ tr:hover {
   box-shadow: 0 0 20px #000;
   text-align: center;
   position: relative;
-  animation: slideUp 0.5s;
-}
-@keyframes slideUp {
-  from { transform: translateY(40px); opacity: 0; }
-  to   { transform: translateY(0); opacity: 1; }
 }
 .user-stats-content h2 {
   color: var(--twitch-purple);
@@ -255,7 +243,6 @@ tr:hover {
   font-weight: bold;
   padding: 4px 10px;
   cursor: pointer;
-  transition: background 0.2s, color 0.2s;
 }
 .user-stats-content button:hover {
   background: var(--twitch-accent);
@@ -276,84 +263,50 @@ tr:hover {
   color: var(--twitch-accent);
   cursor: pointer;
   text-decoration: underline;
-  transition: color 0.2s;
 }
 .user-link:hover {
   color: var(--twitch-purple);
 }
 
+.notfound {
+  color: var(--twitch-error);
+  text-align: center;
+  margin-bottom: 1rem;
+}
+
+/* Mobile Optimization */
 @media (max-width: 700px) {
-  html, body {
-    padding: 0;
-    margin: 0;
-    width: 100vw;
-    min-width: 0;
-    overflow-x: hidden;
-  }
   h1 {
-    font-size: 1.1rem;
-    margin-top: 0.7rem;
+    font-size: 1.5rem;
+    margin-top: 1rem;
     padding: 0 0.5rem;
-    word-break: break-word;
-  }
-  .info, .admin-box {
-    padding: 0.7rem 0.2rem;
-    max-width: 100vw;
-    margin: 1rem 0.1rem;
-    font-size: 0.98rem;
   }
   .links {
     flex-direction: column;
-    gap: 0.5rem;
-    font-size: 0.98rem;
-    margin: 1rem 0;
-    width: 100vw;
     align-items: center;
+    font-size: 1rem;
+    margin: 1rem 0;
   }
-  table {
-    font-size: 0.93rem;
-    margin: 0.7rem 0.1rem;
-    max-width: 100vw;
-    width: 99vw;
-    border-radius: 0;
-    box-shadow: none;
-    overflow-x: auto;
-    display: block;
-  }
-  th, td {
-    padding: 8px 4px;
-    word-break: break-word;
-    font-size: 0.95em;
+  .admin-box,
+  .info,
+  .user-stats-content {
+    padding: 1rem 0.5rem;
+    max-width: 95vw;
+    font-size: 0.95rem;
   }
   .searchbar {
     flex-direction: column;
-    gap: 0.4rem;
-    margin: 1rem 0 0.5rem 0;
-    width: 100vw;
     align-items: center;
+    gap: 0.4rem;
   }
-  .searchbar input {
-    width: 95vw;
+  .searchbar input,
+  .searchbar button {
+    width: 90vw;
     max-width: 300px;
-    font-size: 1em;
-  }
-  .user-stats-content {
-    padding: 0.7rem 0.2rem;
-    min-width: 0;
-    max-width: 98vw;
-    font-size: 0.98rem;
-  }
-  .user-stats-content table {
-    font-size: 0.95em;
   }
   .user-stats-content button {
     top: 5px;
     right: 5px;
-    padding: 2px 8px;
     font-size: 1em;
-  }
-  .notfound {
-    font-size: 0.98em;
-    padding: 0 0.2rem;
   }
 }
