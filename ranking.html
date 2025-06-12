@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="pt">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Ranking do Bot do Cavaquinho</title>
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+        background: #181a1b;
+        color: #e0e0e0;
+      }
+      h1 {
+        color: #7fffd4;
+        text-align: center;
+      }
+      table {
+        border-collapse: collapse;
+        width: 100%;
+        max-width: 700px;
+        margin: 2rem auto;
+        background: #23272a;
+      }
+      th,
+      td {
+        border: 1px solid #333;
+        padding: 8px 12px;
+      }
+      th {
+        background: #222e26;
+        color: #7fffd4;
+      }
+      tr:nth-child(even) {
+        background: #23272a;
+      }
+      tr:nth-child(odd) {
+        background: #181a1b;
+      }
+      .searchbar {
+        display: flex;
+        justify-content: center;
+        margin: 2rem 0 1rem 0;
+      }
+      .searchbar input {
+        padding: 8px 12px;
+        border-radius: 4px;
+        border: 1px solid #444;
+        background: #23272a;
+        color: #e0e0e0;
+        width: 250px;
+      }
+      .searchbar button {
+        padding: 8px 16px;
+        border-radius: 4px;
+        border: none;
+        background: #7fffd4;
+        color: #181a1b;
+        font-weight: bold;
+        cursor: pointer;
+        margin-left: 8px;
+      }
+      .notfound {
+        color: #ff6b6b;
+        text-align: center;
+      }
+    </style>
+  </head>
+  <body>
+    <h1>🏆 Ranking dos Utilizadores</h1>
+    <div class="searchbar">
+      <input
+        type="text"
+        id="searchInput"
+        placeholder="Procurar utilizador..."
+      />
+      <button onclick="searchUser()">Procurar</button>
+    </div>
+    <div id="notFound" class="notfound"></div>
+    <table id="rankingTable">
+      <tr>
+        <th>#</th>
+        <th>Utilizador</th>
+        <th>Pontos</th>
+      </tr>
+      <!-- Ranking será preenchido pelo JS -->
+    </table>
+    <p style="text-align: center">
+      <a href="index.html">← Voltar à página inicial</a>
+    </p>
+    <script type="module">
+      // Substitua pelos dados do seu projeto Firebase
+      const firebaseConfig = {
+        apiKey: "AIzaSyDuMS9GHD3_zQQa5cRMUuA1YA5cjegoGDM",
+        authDomain: "bot-cavaquinho.firebaseapp.com",
+        projectId: "bot-cavaquinho",
+      };
+
+      import { initializeApp } from "https://www.gstatic.com/firebasejs/10.11.1/firebase-app.js";
+      import {
+        getFirestore,
+        collection,
+        getDocs,
+      } from "https://www.gstatic.com/firebasejs/10.11.1/firebase-firestore.js";
+
+      const app = initializeApp(firebaseConfig);
+      const db = getFirestore(app);
+
+      let rankingData = [];
+
+      async function carregarRanking() {
+        const snapshot = await getDocs(collection(db, "points"));
+        rankingData = [];
+        snapshot.forEach((doc) => {
+          const data = doc.data();
+          rankingData.push({ user: doc.id, points: data.points || 0 });
+        });
+        // Ordena por pontos decrescente
+        rankingData.sort((a, b) => b.points - a.points);
+        renderRanking(rankingData);
+      }
+
+      function renderRanking(data) {
+        const table = document.getElementById("rankingTable");
+        // Remove todas as linhas exceto o header
+        while (table.rows.length > 1) table.deleteRow(1);
+        data.forEach((item, idx) => {
+          const row = table.insertRow();
+          row.insertCell().textContent = idx + 1;
+          row.insertCell().textContent = item.user;
+          row.insertCell().textContent = Math.floor(item.points);
+        });
+      }
+
+      function searchUser() {
+        const input = document
+          .getElementById("searchInput")
+          .value.trim()
+          .toLowerCase();
+        const notFound = document.getElementById("notFound");
+        if (!input) {
+          renderRanking(rankingData);
+          notFound.textContent = "";
+          return;
+        }
+        const filtered = rankingData.filter((item) =>
+          item.user.toLowerCase().includes(input)
+        );
+        renderRanking(filtered);
+        notFound.textContent =
+          filtered.length === 0 ? "Utilizador não encontrado." : "";
+      }
+
+      document
+        .getElementById("searchInput")
+        .addEventListener("input", searchUser);
+
+      carregarRanking();
+    </script>
+  </body>
+</html>
