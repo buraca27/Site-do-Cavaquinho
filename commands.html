@@ -1,4 +1,3 @@
-<!-- comandos.html -->
 <!DOCTYPE html>
 <html lang="pt">
   <head>
@@ -42,15 +41,49 @@
         color: #ff6b6b;
         font-weight: bold;
       }
-      /* Optional: subtle link hover */
-      a:hover {
-        text-decoration: underline;
+      .admin-row {
+        display: none;
+      }
+      .admin-visible .admin-row {
+        display: table-row;
+      }
+      .admin-box {
+        text-align: center;
+        margin: 2rem 0 0 0;
+      }
+      .admin-box input[type="password"] {
+        padding: 6px 10px;
+        border-radius: 4px;
+        border: 1px solid #444;
+        background: #23272a;
+        color: #e0e0e0;
+      }
+      .admin-box button {
+        padding: 6px 14px;
+        border-radius: 4px;
+        border: none;
+        background: #7fffd4;
+        color: #181a1b;
+        font-weight: bold;
+        cursor: pointer;
+        margin-left: 8px;
+      }
+      .admin-box .error {
+        color: #ff6b6b;
+        margin-top: 8px;
+        display: block;
       }
     </style>
   </head>
   <body>
     <h1>Comandos do Bot do Cavaquinho</h1>
-    <table>
+    <div class="admin-box">
+      <label for="adminPwd">Área admin:</label>
+      <input type="password" id="adminPwd" placeholder="Password de admin" />
+      <button onclick="showAdmin()">Ver comandos admin</button>
+      <span id="adminError" class="error"></span>
+    </div>
+    <table id="commandsTable">
       <tr>
         <th>Comando</th>
         <th>Descrição</th>
@@ -114,20 +147,81 @@
         <td>?unblacklist &lt;user&gt;</td>
         <td>Remove um user da blacklist <span class="admin">(admin)</span></td>
       </tr>
-      <tr>
+      <!-- Admin-only commands (hidden by default) -->
+      <tr class="admin-row">
         <td>?darpontos &lt;user&gt; &lt;quantia&gt;</td>
         <td>Dá pontos a um utilizador <span class="admin">(admin)</span></td>
       </tr>
-      <tr>
+      <tr class="admin-row">
         <td>?tirarpontos &lt;user&gt; &lt;quantia&gt;</td>
-        <td>
-          Remove pontos de um utilizador <span class="admin">(admin)</span>
-        </td>
+        <td>Remove pontos de um utilizador <span class="admin">(admin)</span></td>
+      </tr>
+      <tr class="admin-row">
+        <td>?acabouabrincadeira</td>
+        <td>Desativa pontos para todos <span class="admin">(admin)</span></td>
+      </tr>
+      <tr class="admin-row">
+        <td>?voltabrincadeira</td>
+        <td>Ativa pontos para todos <span class="admin">(admin)</span></td>
+      </tr>
+      <tr class="admin-row">
+        <td>?cooldownglobal &lt;segundos&gt;</td>
+        <td>Define o cooldown global <span class="admin">(admin)</span></td>
+      </tr>
+      <tr class="admin-row">
+        <td>?cooldowngamble &lt;segundos&gt;</td>
+        <td>Define o cooldown das apostas <span class="admin">(admin)</span></td>
+      </tr>
+      <tr class="admin-row">
+        <td>?adicionarloja &lt;produto&gt; &lt;preço&gt;</td>
+        <td>Adiciona produto à loja <span class="admin">(admin)</span></td>
+      </tr>
+      <tr class="admin-row">
+        <td>?removerloja &lt;produto&gt;</td>
+        <td>Remove produto da loja <span class="admin">(admin)</span></td>
+      </tr>
+      <tr class="admin-row">
+        <td>?editarpreco &lt;produto&gt; &lt;novo_preço&gt;</td>
+        <td>Edita o preço de um produto <span class="admin">(admin)</span></td>
+      </tr>
+      <tr class="admin-row">
+        <td>?desabilitarloja &lt;produto&gt;</td>
+        <td>Desabilita produto da loja <span class="admin">(admin)</span></td>
+      </tr>
+      <tr class="admin-row">
+        <td>?habilitarloja &lt;produto&gt;</td>
+        <td>Habilita produto da loja <span class="admin">(admin)</span></td>
+      </tr>
+      <tr class="admin-row">
+        <td>?sigaprovicio</td>
+        <td>Ativa as apostas <span class="admin">(admin)</span></td>
+      </tr>
+      <tr class="admin-row">
+        <td>?chegadevicio</td>
+        <td>Desativa as apostas <span class="admin">(admin)</span></td>
       </tr>
     </table>
     <p style="text-align: center">
       <a href="index.html">← Voltar à página inicial</a>
     </p>
     <p style="text-align: center; color: #888">Atualizado em 2025</p>
+    <script>
+      // Defina a password de admin aqui (exemplo: "cavaquinho123")
+      const ADMIN_PASSWORD = "cavaquinho123";
+      function showAdmin() {
+        const pwd = document.getElementById("adminPwd").value;
+        const error = document.getElementById("adminError");
+        if (pwd === ADMIN_PASSWORD) {
+          document.getElementById("commandsTable").classList.add("admin-visible");
+          error.textContent = "";
+        } else {
+          error.textContent = "Password errada!";
+        }
+      }
+      // Enter key submit
+      document.getElementById("adminPwd").addEventListener("keydown", function(e) {
+        if (e.key === "Enter") showAdmin();
+      });
+    </script>
   </body>
 </html>
