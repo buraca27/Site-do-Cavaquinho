@@ -115,6 +115,7 @@
         body.innerHTML = "<p class='stat-value'>Carregando...</p>";
         modal.style.display = "flex";
         modal.classList.remove("loaded");
+        setTimeout(() => modal.classList.add("loaded"), 10); // Trigger animation
         const statsRef = doc(db, "userStats", username.toLowerCase());
         try {
           const statsSnap = await getDoc(statsRef);
