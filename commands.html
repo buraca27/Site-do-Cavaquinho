@@ -137,15 +137,11 @@
         <td>Mostra esta página</td>
       </tr>
       <tr>
-        <td>?blacklist [user]</td>
+        <td>?blacklist</td>
         <td>
-          Mostra ou adiciona um user à blacklist
+          Mostra a blacklist
           <span class="admin">(admin)</span>
         </td>
-      </tr>
-      <tr>
-        <td>?unblacklist &lt;user&gt;</td>
-        <td>Remove um user da blacklist <span class="admin">(admin)</span></td>
       </tr>
       <!-- Admin-only commands (hidden by default) -->
       <tr class="admin-row">
@@ -154,8 +150,22 @@
       </tr>
       <tr class="admin-row">
         <td>?tirarpontos &lt;user&gt; &lt;quantia&gt;</td>
-        <td>Remove pontos de um utilizador <span class="admin">(admin)</span></td>
+        <td>
+          Remove pontos de um utilizador <span class="admin">(admin)</span>
+        </td>
       </tr>
+      <tr class="admin-row">
+        <td>?blacklist [user] &lt;user&gt; &lt;quantia&gt;</td>
+        <td>
+          Mostra ou adiciona um user à blacklist
+          <span class="admin">(admin)</span>
+        </td>
+      </tr>
+      <tr class="admin-row">
+        <td>?unblacklist [user] &lt;user&gt; &lt;quantia&gt;</td>
+        <td>Remove um user da blacklist <span class="admin">(admin)</span></td>
+      </tr>
+
       <tr class="admin-row">
         <td>?acabouabrincadeira</td>
         <td>Desativa pontos para todos <span class="admin">(admin)</span></td>
@@ -170,7 +180,9 @@
       </tr>
       <tr class="admin-row">
         <td>?cooldowngamble &lt;segundos&gt;</td>
-        <td>Define o cooldown das apostas <span class="admin">(admin)</span></td>
+        <td>
+          Define o cooldown das apostas <span class="admin">(admin)</span>
+        </td>
       </tr>
       <tr class="admin-row">
         <td>?adicionarloja &lt;produto&gt; &lt;preço&gt;</td>
@@ -212,16 +224,20 @@
         const pwd = document.getElementById("adminPwd").value;
         const error = document.getElementById("adminError");
         if (pwd === ADMIN_PASSWORD) {
-          document.getElementById("commandsTable").classList.add("admin-visible");
+          document
+            .getElementById("commandsTable")
+            .classList.add("admin-visible");
           error.textContent = "";
         } else {
           error.textContent = "Password errada!";
         }
       }
       // Enter key submit
-      document.getElementById("adminPwd").addEventListener("keydown", function(e) {
-        if (e.key === "Enter") showAdmin();
-      });
+      document
+        .getElementById("adminPwd")
+        .addEventListener("keydown", function (e) {
+          if (e.key === "Enter") showAdmin();
+        });
     </script>
   </body>
 </html>
