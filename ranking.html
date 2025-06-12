@@ -111,7 +111,11 @@
         rankingData = [];
         snapshot.forEach((doc) => {
           const data = doc.data();
-          rankingData.push({ user: doc.id, points: data.points || 0 });
+          const userId = doc.id.toLowerCase();
+          // Filtra cavaquiinho30 e ecoponto30
+          if (userId !== "cavaquiinho30" && userId !== "ecoponto30") {
+            rankingData.push({ user: doc.id, points: data.points || 0 });
+          }
         });
         // Ordena por pontos decrescente
         rankingData.sort((a, b) => b.points - a.points);
