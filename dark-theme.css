@@ -236,4 +236,157 @@ tr:hover {
   border-radius: var(--border-radius);
   padding: 1rem;
   text-align: center;
-  box-shadow:
+  box-shadow: var(--shadow);
+  transition: var(--transition);
+}
+.stat-card:hover {
+  transform: translateY(-3px);
+  box-shadow: var(--glow);
+}
+
+.stat-icon {
+  font-size: 2rem;
+  color: var(--twitch-purple);
+  margin-bottom: 0.5rem;
+}
+
+.stat-value {
+  font-size: clamp(1.25rem, 5vw, 1.5rem);
+  font-weight: 700;
+  color: var(--twitch-accent);
+  transition: opacity 0.3s ease;
+}
+.stat-value.loaded {
+  opacity: 1;
+}
+.stat-value.error {
+  color: var(--twitch-error);
+}
+
+.stats-note {
+  color: #888;
+  font-size: clamp(0.8rem, 3vw, 0.9rem);
+  text-align: center;
+  margin: 1rem 0;
+}
+
+/* Back Link */
+.back-link {
+  display: inline-block;
+  padding: 0.5rem 1rem;
+  font-size: clamp(0.9rem, 3.5vw, 1rem);
+  transition: var(--transition);
+}
+.back-link:hover, .back-link:focus {
+  color: var(--twitch-purple);
+  transform: translateX(-3px);
+}
+
+/* Footer */
+.footer {
+  text-align: center;
+  padding: 1rem;
+  color: #888;
+  font-size: clamp(0.8rem, 3vw, 0.9rem);
+  width: 100%;
+  max-width: 1200px;
+}
+
+.footer a {
+  color: var(--twitch-accent);
+}
+.footer a:hover {
+  color: var(--twitch-purple);
+}
+
+/* Responsive Design */
+@media (min-width: 1200px) {
+  body {
+    padding: 2rem;
+  }
+
+  .header, .nav-links, .stats-grid, .table-wrapper, .footer {
+    max-width: 1000px;
+  }
+
+  .nav-links {
+    grid-template-columns: repeat(5, 1fr);
+  }
+
+  th, td {
+    padding: 1.25rem 1rem;
+    font-size: clamp(0.9rem, 2vw, 1rem);
+  }
+
+  .searchbar {
+    flex-direction: row;
+    gap: 0.75rem;
+  }
+
+  .searchbar input, .searchbar button {
+    width: auto;
+  }
+}
+
+@media (max-width: 768px) {
+  body {
+    padding: 0.75rem;
+  }
+
+  .header {
+    padding: 0.75rem;
+  }
+
+  h1 {
+    font-size: clamp(1.5rem, 5vw, 1.75rem);
+  }
+
+  .table-wrapper {
+    margin: 0;
+  }
+
+  table {
+    min-width: 100%;
+  }
+
+  th, td {
+    padding: 0.75rem 0.5rem;
+    font-size: clamp(0.8rem, 3vw, 0.9rem);
+  }
+
+  .searchbar {
+    max-width: 100%;
+  }
+
+  .searchbar input, .searchbar button {
+    padding: 0.65rem 0.75rem;
+    font-size: clamp(0.85rem, 3.5vw, 0.95rem);
+  }
+
+  .info, .stat-card {
+    margin: 0.5rem;
+    padding: 0.75rem;
+  }
+
+  .stats-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 480px) {
+  .nav-links {
+    grid-template-columns: 1fr;
+  }
+
+  .nav-button {
+    padding: 0.65rem;
+  }
+
+  th, td {
+    padding: 0.5rem 0.25rem;
+  }
+
+  .stat-card {
+    padding: 0.75rem;
+  }
+}
