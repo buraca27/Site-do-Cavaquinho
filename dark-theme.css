@@ -1,38 +1,109 @@
+:root {
+  --twitch-purple: #9147ff;
+  --twitch-dark: #18181b;
+  --twitch-bg-gradient: linear-gradient(135deg, #18181b 0%, #262347 100%);
+  --twitch-accent: #a970ff;
+  --twitch-highlight: #f7f7fa;
+  --twitch-error: #ff4b4b;
+}
+
+html, body {
+  height: 100%;
+  margin: 0;
+  padding: 0;
+}
+
 body {
-  font-family: Arial, sans-serif;
-  background: #181a1b;
-  color: #e0e0e0;
+  min-height: 100vh;
+  background: var(--twitch-bg-gradient);
+  color: var(--twitch-highlight);
+  font-family: 'Segoe UI', 'Arial', sans-serif;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  animation: fadeIn 1s;
 }
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+
 h1 {
-  color: #7fffd4;
+  color: var(--twitch-purple);
+  text-align: center;
+  margin-top: 2rem;
+  letter-spacing: 1px;
+  font-size: 2.2rem;
+  text-shadow: 0 2px 12px #0008;
+  animation: slideDown 0.8s;
 }
+
+@keyframes slideDown {
+  from { transform: translateY(-30px); opacity: 0; }
+  to   { transform: translateY(0); opacity: 1; }
+}
+
 a {
-  color: #7fffd4;
+  color: var(--twitch-accent);
+  text-decoration: none;
+  transition: color 0.2s;
 }
+a:hover {
+  color: var(--twitch-purple);
+  text-decoration: underline;
+}
+
+.links {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 1.2rem;
+  margin: 2rem 0;
+  font-size: 1.1rem;
+}
+
 table {
   border-collapse: collapse;
-  width: 100%;
+  width: 95%;
   max-width: 700px;
   margin: 2rem auto;
-  background: #23272a;
+  background: rgba(24,24,27,0.95);
+  border-radius: 14px;
+  overflow: hidden;
+  box-shadow: 0 4px 32px #0006;
+  animation: fadeIn 1.2s;
 }
-th,
-td {
-  border: 1px solid #333;
-  padding: 8px 12px;
+
+th, td {
+  border: none;
+  padding: 14px 12px;
+  text-align: left;
+  font-size: 1rem;
 }
+
 th {
-  background: #222e26;
-  color: #7fffd4;
+  background: var(--twitch-purple);
+  color: #fff;
+  font-weight: bold;
+  letter-spacing: 0.5px;
+}
+
+tr {
+  transition: background 0.2s;
 }
 tr:nth-child(even) {
-  background: #23272a;
+  background: #232347;
 }
 tr:nth-child(odd) {
-  background: #181a1b;
+  background: #18181b;
 }
+tr:hover {
+  background: #2d1a4d;
+}
+
 .admin {
-  color: #ff6b6b;
+  color: var(--twitch-error);
   font-weight: bold;
 }
 .admin-row {
@@ -40,100 +111,155 @@ tr:nth-child(odd) {
 }
 .admin-visible .admin-row {
   display: table-row;
+  animation: fadeIn 0.7s;
 }
+
 .admin-box {
   text-align: center;
   margin: 2rem 0 0 0;
+  background: rgba(24,24,27,0.7);
+  padding: 1.2rem 1rem;
+  border-radius: 10px;
+  box-shadow: 0 2px 12px #0004;
+  max-width: 350px;
+  margin-left: auto;
+  margin-right: auto;
+  animation: fadeIn 1.3s;
 }
 .admin-box input[type="password"] {
-  padding: 6px 10px;
+  padding: 8px 12px;
   border-radius: 4px;
   border: 1px solid #444;
-  background: #23272a;
-  color: #e0e0e0;
+  background: #232347;
+  color: #fff;
+  margin-right: 8px;
+  transition: border 0.2s;
+}
+.admin-box input[type="password"]:focus {
+  border: 1.5px solid var(--twitch-purple);
+  outline: none;
 }
 .admin-box button {
-  padding: 6px 14px;
+  padding: 8px 18px;
   border-radius: 4px;
   border: none;
-  background: #7fffd4;
-  color: #181a1b;
+  background: var(--twitch-purple);
+  color: #fff;
   font-weight: bold;
   cursor: pointer;
   margin-left: 8px;
+  transition: background 0.2s, color 0.2s;
+}
+.admin-box button:hover {
+  background: var(--twitch-accent);
+  color: #18181b;
 }
 .admin-box .error {
-  color: #ff6b6b;
+  color: var(--twitch-error);
   margin-top: 8px;
   display: block;
+  font-size: 0.97em;
 }
-/* Optional: subtle link hover */
-a:hover {
-  text-decoration: underline;
+
+.info {
+  background: rgba(24,24,27,0.8);
+  border-radius: 10px;
+  padding: 1.2rem 1.5rem;
+  margin: 2rem auto 1rem auto;
+  max-width: 400px;
+  box-shadow: 0 2px 12px #0004;
+  animation: fadeIn 1.1s;
 }
-/* Ranking page extras */
+
 .searchbar {
   display: flex;
   justify-content: center;
   margin: 2rem 0 1rem 0;
+  gap: 0.5rem;
 }
 .searchbar input {
   padding: 8px 12px;
   border-radius: 4px;
   border: 1px solid #444;
-  background: #23272a;
-  color: #e0e0e0;
-  width: 250px;
+  background: #232347;
+  color: #fff;
+  width: 200px;
+  transition: border 0.2s;
+}
+.searchbar input:focus {
+  border: 1.5px solid var(--twitch-purple);
+  outline: none;
 }
 .searchbar button {
   padding: 8px 16px;
   border-radius: 4px;
   border: none;
-  background: #7fffd4;
-  color: #181a1b;
+  background: var(--twitch-purple);
+  color: #fff;
   font-weight: bold;
   cursor: pointer;
-  margin-left: 8px;
+  transition: background 0.2s, color 0.2s;
 }
+.searchbar button:hover {
+  background: var(--twitch-accent);
+  color: #18181b;
+}
+
 .notfound {
-  color: #ff6b6b;
+  color: var(--twitch-error);
   text-align: center;
+  margin-bottom: 1rem;
 }
+
 .user-stats-modal {
   display: none;
   position: fixed;
   top: 0; left: 0; right: 0; bottom: 0;
-  background: rgba(0,0,0,0.7);
+  background: rgba(24,24,27,0.85);
   z-index: 1000;
   align-items: center;
   justify-content: center;
+  animation: fadeIn 0.5s;
+}
+.user-stats-modal[style*="flex"] {
+  display: flex !important;
 }
 .user-stats-content {
-  background: #23272a;
-  color: #e0e0e0;
+  background: #232347;
+  color: #fff;
   padding: 2rem 2.5rem;
-  border-radius: 10px;
+  border-radius: 14px;
   min-width: 300px;
   max-width: 90vw;
   box-shadow: 0 0 20px #000;
   text-align: center;
   position: relative;
+  animation: slideUp 0.5s;
+}
+@keyframes slideUp {
+  from { transform: translateY(40px); opacity: 0; }
+  to   { transform: translateY(0); opacity: 1; }
 }
 .user-stats-content h2 {
-  color: #7fffd4;
+  color: var(--twitch-purple);
   margin-bottom: 1rem;
 }
 .user-stats-content button {
   position: absolute;
   top: 10px;
   right: 10px;
-  background: #7fffd4;
-  color: #181a1b;
+  background: var(--twitch-purple);
+  color: #fff;
   border: none;
   border-radius: 4px;
   font-weight: bold;
   padding: 4px 10px;
   cursor: pointer;
+  transition: background 0.2s, color 0.2s;
+}
+.user-stats-content button:hover {
+  background: var(--twitch-accent);
+  color: #18181b;
 }
 .user-stats-content table {
   margin: 1rem auto 0 auto;
@@ -147,7 +273,43 @@ a:hover {
   text-align: left;
 }
 .user-link {
-  color: #7fffd4;
+  color: var(--twitch-accent);
   cursor: pointer;
   text-decoration: underline;
+  transition: color 0.2s;
+}
+.user-link:hover {
+  color: var(--twitch-purple);
+}
+
+/* Responsividade */
+@media (max-width: 700px) {
+  h1 {
+    font-size: 1.3rem;
+    margin-top: 1.2rem;
+  }
+  .info, .admin-box {
+    padding: 1rem 0.5rem;
+    max-width: 98vw;
+  }
+  table {
+    font-size: 0.97rem;
+    margin: 1rem 0.2rem;
+    max-width: 99vw;
+  }
+  th, td {
+    padding: 10px 6px;
+  }
+  .user-stats-content {
+    padding: 1rem 0.5rem;
+    min-width: 0;
+  }
+  .links {
+    flex-direction: column;
+    gap: 0.7rem;
+    font-size: 1rem;
+  }
+  .searchbar input {
+    width: 120px;
+  }
 }
