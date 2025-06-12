@@ -62,6 +62,58 @@
         color: #ff6b6b;
         text-align: center;
       }
+      .user-stats-modal {
+        display: none;
+        position: fixed;
+        top: 0; left: 0; right: 0; bottom: 0;
+        background: rgba(0,0,0,0.7);
+        z-index: 1000;
+        align-items: center;
+        justify-content: center;
+      }
+      .user-stats-content {
+        background: #23272a;
+        color: #e0e0e0;
+        padding: 2rem 2.5rem;
+        border-radius: 10px;
+        min-width: 300px;
+        max-width: 90vw;
+        box-shadow: 0 0 20px #000;
+        text-align: center;
+        position: relative;
+      }
+      .user-stats-content h2 {
+        color: #7fffd4;
+        margin-bottom: 1rem;
+      }
+      .user-stats-content button {
+        position: absolute;
+        top: 10px;
+        right: 10px;
+        background: #7fffd4;
+        color: #181a1b;
+        border: none;
+        border-radius: 4px;
+        font-weight: bold;
+        padding: 4px 10px;
+        cursor: pointer;
+      }
+      .user-stats-content table {
+        margin: 1rem auto 0 auto;
+        background: none;
+        border: none;
+        width: auto;
+      }
+      .user-stats-content td {
+        border: none;
+        padding: 4px 12px;
+        text-align: left;
+      }
+      .user-link {
+        color: #7fffd4;
+        cursor: pointer;
+        text-decoration: underline;
+      }
     </style>
   </head>
   <body>
@@ -86,6 +138,17 @@
     <p style="text-align: center">
       <a href="index.html">← Voltar à página inicial</a>
     </p>
+
+    <!-- Modal para estatísticas do utilizador -->
+    <div class="user-stats-modal" id="userStatsModal">
+      <div class="user-stats-content" id="userStatsContent">
+        <button onclick="closeUserStats()">X</button>
+        <div id="userStatsBody">
+          <!-- Conteúdo dinâmico -->
+        </div>
+      </div>
+    </div>
+
     <script type="module">
       // Substitua pelos dados do seu projeto Firebase
       const firebaseConfig = {
@@ -99,6 +162,8 @@
         getFirestore,
         collection,
         getDocs,
+        doc,
+        getDoc
       } from "https://www.gstatic.com/firebasejs/10.11.1/firebase-firestore.js";
 
       const app = initializeApp(firebaseConfig);
@@ -109,12 +174,12 @@
       async function carregarRanking() {
         const snapshot = await getDocs(collection(db, "points"));
         rankingData = [];
-        snapshot.forEach((doc) => {
-          const data = doc.data();
-          const userId = doc.id.toLowerCase();
+        snapshot.forEach((docSnap) => {
+          const data = docSnap.data();
+          const userId = docSnap.id.toLowerCase();
           // Filtra cavaquiinho30 e ecoponto30
           if (userId !== "cavaquiinho30" && userId !== "ecoponto30") {
-            rankingData.push({ user: doc.id, points: data.points || 0 });
+            rankingData.push({ user: docSnap.id, points: data.points || 0 });
           }
         });
         // Ordena por pontos decrescente
@@ -129,7 +194,8 @@
         data.forEach((item, idx) => {
           const row = table.insertRow();
           row.insertCell().textContent = idx + 1;
-          row.insertCell().textContent = item.user;
+          const userCell = row.insertCell();
+          userCell.innerHTML = `<span class="user-link" onclick="window.showUserStats('${item.user}')">${item.user}</span>`;
           row.insertCell().textContent = Math.floor(item.points);
         });
       }
@@ -156,6 +222,36 @@
       document
         .getElementById("searchInput")
         .addEventListener("input", searchUser);
+
+      // Função global para mostrar estatísticas do utilizador
+      window.showUserStats = async function(username) {
+        const modal = document.getElementById("userStatsModal");
+        const body = document.getElementById("userStatsBody");
+        body.innerHTML = "<p>A carregar estatísticas...</p>";
+        modal.style.display = "flex";
+        // Vai buscar as estatísticas do utilizador
+        const statsRef = doc(db, "userStats", username.toLowerCase());
+        const statsSnap = await getDoc(statsRef);
+        if (!statsSnap.exists()) {
+          body.innerHTML = `<h2>${username}</h2><p>Sem estatísticas disponíveis.</p>`;
+          return;
+        }
+        const stats = statsSnap.data();
+        body.innerHTML = `
+          <h2>${username}</h2>
+          <table>
+            <tr><td><b>Apostas:</b></td><td>${stats.apostas ?? 0}</td></tr>
+            <tr><td><b>Vitórias:</b></td><td>${stats.ganhos ?? 0}</td></tr>
+            <tr><td><b>Derrotas:</b></td><td>${stats.perdas ?? 0}</td></tr>
+            <tr><td><b>Total apostado:</b></td><td>${stats.apostado ?? 0}</td></tr>
+            <tr><td><b>Preço Certo ganhos:</b></td><td>${stats.precoCerto?.ganhos ?? 0}</td></tr>
+          </table>
+        `;
+      };
+
+      window.closeUserStats = function() {
+        document.getElementById("userStatsModal").style.display = "none";
+      };
 
       carregarRanking();
     </script>
