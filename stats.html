@@ -7,17 +7,32 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
   </head>
   <body>
-    <h1>📈 Estatísticas do Canal</h1>
-
-    <div class="info">
-      <p>
-        <b>Total de pontos distribuídos:</b> <span id="totalPontos">?</span>
-      </p>
-      <p><b>Apostas feitas:</b> <span id="apostas">?</span></p>
-      <p><b>Preço Certo ganhos:</b> <span id="precoCerto">?</span></p>
-      <p style="color: #888">(Estatísticas atualizadas pelo bot)</p>
+    <header class="header">
+      <div class="logo">🎶 Bot do Cavaquinho</div>
+      <h1>📈 Estatísticas do Canal</h1>
+    </header>
+    <div class="stats-grid">
+      <div class="stat-card">
+        <span class="stat-icon">🎁</span>
+        <h3>Total de Pontos</h3>
+        <p class="stat-value" id="totalPontos">Carregando...</p>
+      </div>
+      <div class="stat-card">
+        <span class="stat-icon">🎰</span>
+        <h3>Apostas Feitas</h3>
+        <p class="stat-value" id="apostas">Carregando...</p>
+      </div>
+      <div class="stat-card">
+        <span class="stat-icon">🏅</span>
+        <h3>Preço Certo Ganhos</h3>
+        <p class="stat-value" id="precoCerto">Carregando...</p>
+      </div>
     </div>
-    <p><a href="index.html">← Voltar à página inicial</a></p>
+    <p class="stats-note">Estatísticas atualizadas pelo bot</p>
+    <a href="index.html" class="back-link">← Voltar à página inicial</a>
+    <footer class="footer">
+      <p>Feito com ❤️ por <a href="https://twitch.tv/buraca27" target="_blank">Buraca27</a></p>
+    </footer>
 
     <!-- Firebase SDKs -->
     <script type="module">
@@ -39,14 +54,26 @@
 
       async function carregarStats() {
         const statsRef = doc(db, "stats", "global");
-        const statsSnap = await getDoc(statsRef);
-        if (statsSnap.exists()) {
-          const stats = statsSnap.data();
-          document.getElementById("totalPontos").textContent =
-            stats.totalPontos ?? "0";
-          document.getElementById("apostas").textContent = stats.apostas ?? "0";
-          document.getElementById("precoCerto").textContent =
-            stats.precoCerto ?? "0";
+        try {
+          const statsSnap = await getDoc(statsRef);
+          if (statsSnap.exists()) {
+            const stats = statsSnap.data();
+            document.getElementById("totalPontos").textContent = stats.totalPontos ?? "0";
+            document.getElementById("apostas").textContent = stats.apostas ?? "0";
+            document.getElementById("precoCerto").textContent = stats.precoCerto ?? "0";
+            document.querySelectorAll(".stat-value").forEach(el => el.classList.add("loaded"));
+          } else {
+            document.querySelectorAll(".stat-value").forEach(el => {
+              el.textContent = "N/A";
+              el.classList.add("error");
+            });
+          }
+        } catch (error) {
+          console.error("Erro ao carregar stats:", error);
+          document.querySelectorAll(".stat-value").forEach(el => {
+            el.textContent = "Erro";
+            el.classList.add("error");
+          });
         }
       }
 

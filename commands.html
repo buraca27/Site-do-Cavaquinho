@@ -4,16 +4,11 @@
     <meta charset="UTF-8" />
     <title>Comandos do Bot do Cavaquinho</title>
     <link rel="stylesheet" href="dark-theme.css" />
-    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
   </head>
   <body>
     <h1>Comandos do Bot do Cavaquinho</h1>
-    <div class="admin-box">
-      <label for="adminPwd">Área admin:</label>
-      <input type="password" id="adminPwd" placeholder="Password de admin" />
-      <button onclick="showAdmin()">Ver comandos admin</button>
-      <span id="adminError" class="error"></span>
-    </div>
+
     <table id="commandsTable">
       <tr>
         <th>Comando</th>
@@ -141,6 +136,12 @@
         <td>Desativa as apostas <span class="admin">(admin)</span></td>
       </tr>
     </table>
+    <div class="admin-box">
+      <label for="adminPwd">Área admin:</label>
+      <input type="password" id="adminPwd" placeholder="Password de admin" />
+      <button onclick="showAdmin()">Ver comandos admin</button>
+      <span id="adminError" class="error"></span>
+    </div>
     <p style="text-align: center">
       <a href="index.html">← Voltar à página inicial</a>
     </p>
