@@ -2,43 +2,55 @@
 <html lang="pt">
   <head>
     <meta charset="UTF-8" />
-    <title>Estatísticas do Bot do Cavaquinho</title>
+    <title>Ranking do Bot do Cavaquinho</title>
     <link rel="stylesheet" href="dark-theme.css" />
     <meta name="viewport" content="width=device-width, initial-scale=1">
   </head>
   <body>
     <header class="header">
       <div class="logo">🎶 Bot do Cavaquinho</div>
-      <h1>📈 Estatísticas do Canal</h1>
+      <h1>🏆 Ranking dos Utilizadores</h1>
     </header>
-    <div class="stats-grid">
-      <div class="stat-card">
-        <span class="stat-icon">🎁</span>
-        <h3>Total de Pontos</h3>
-        <p class="stat-value" id="totalPontos">Carregando...</p>
-      </div>
-      <div class="stat-card">
-        <span class="stat-icon">🎰</span>
-        <h3>Apostas Feitas</h3>
-        <p class="stat-value" id="apostas">Carregando...</p>
-      </div>
-      <div class="stat-card">
-        <span class="stat-icon">🏅</span>
-        <h3>Preço Certo Ganhos</h3>
-        <p class="stat-value" id="precoCerto">Carregando...</p>
-      </div>
+    <div class="searchbar">
+      <input
+        type="text"
+        id="searchInput"
+        placeholder="Procurar utilizador..."
+      />
+      <button onclick="searchUser()">Procurar</button>
     </div>
-    <p class="stats-note">Estatísticas atualizadas pelo bot</p>
+    <div id="notFound" class="notfound"></div>
+    <div class="table-wrapper">
+      <table id="rankingTable">
+        <tr>
+          <th>#</th>
+          <th>Utilizador</th>
+          <th>Pontos</th>
+        </tr>
+        <!-- Ranking será preenchido pelo JS -->
+      </table>
+    </div>
     <a href="index.html" class="back-link">← Voltar à página inicial</a>
     <footer class="footer">
       <p>Feito com ❤️ por <a href="https://twitch.tv/buraca27" target="_blank">Buraca27</a></p>
     </footer>
 
-    <!-- Firebase SDKs -->
+    <!-- Modal para estatísticas do utilizador -->
+    <div class="user-stats-modal" id="userStatsModal">
+      <div class="user-stats-content">
+        <button class="close-button" onclick="closeUserStats()">✕</button>
+        <div id="userStatsBody">
+          <!-- Conteúdo dinâmico -->
+        </div>
+      </div>
+    </div>
+
     <script type="module">
       import { initializeApp } from "https://www.gstatic.com/firebasejs/10.11.1/firebase-app.js";
       import {
         getFirestore,
+        collection,
+        getDocs,
         doc,
         getDoc,
       } from "https://www.gstatic.com/firebasejs/10.11.1/firebase-firestore.js";
@@ -52,32 +64,118 @@
       const app = initializeApp(firebaseConfig);
       const db = getFirestore(app);
 
-      async function carregarStats() {
-        const statsRef = doc(db, "stats", "global");
-        try {
-          const statsSnap = await getDoc(statsRef);
-          if (statsSnap.exists()) {
-            const stats = statsSnap.data();
-            document.getElementById("totalPontos").textContent = stats.totalPontos ?? "0";
-            document.getElementById("apostas").textContent = stats.apostas ?? "0";
-            document.getElementById("precoCerto").textContent = stats.precoCerto ?? "0";
-            document.querySelectorAll(".stat-value").forEach(el => el.classList.add("loaded"));
-          } else {
-            document.querySelectorAll(".stat-value").forEach(el => {
-              el.textContent = "N/A";
-              el.classList.add("error");
-            });
+      let rankingData = [];
+
+      async function carregarRanking() {
+        const snapshot = await getDocs(collection(db, "points"));
+        rankingData = [];
+        snapshot.forEach((docSnap) => {
+          const data = docSnap.data();
+          const userId = docSnap.id.toLowerCase();
+          if (userId !== "cavaquiinho30" && userId !== "ecoponto30") {
+            rankingData.push({ user: docSnap.id, points: data.points || 0 });
           }
-        } catch (error) {
-          console.error("Erro ao carregar stats:", error);
-          document.querySelectorAll(".stat-value").forEach(el => {
-            el.textContent = "Erro";
-            el.classList.add("error");
-          });
-        }
+        });
+        rankingData.sort((a, b) => b.points - a.points);
+        renderRanking(rankingData);
       }
 
-      carregarStats();
+      function renderRanking(data) {
+        const table = document.getElementById("rankingTable");
+        while (table.rows.length > 1) table.deleteRow(1);
+        data.forEach((item, idx) => {
+          const row = table.insertRow();
+          row.insertCell().textContent = idx + 1;
+          const userCell = row.insertCell();
+          userCell.innerHTML = `<span class="user-link" onclick="window.showUserStats('${item.user}')">${item.user}</span>`;
+          row.insertCell().textContent = Math.floor(item.points);
+        });
+      }
+
+      function searchUser() {
+        const input = document.getElementById("searchInput").value.trim().toLowerCase();
+        const notFound = document.getElementById("notFound");
+        if (!input) {
+          renderRanking(rankingData);
+          notFound.textContent = "";
+          return;
+        }
+        const filtered = rankingData.filter((item) =>
+          item.user.toLowerCase().includes(input)
+        );
+        renderRanking(filtered);
+        notFound.textContent = filtered.length === 0 ? "Utilizador não encontrado." : "";
+      }
+
+      document.getElementById("searchInput").addEventListener("input", searchUser);
+
+      window.showUserStats = async function (username) {
+        const modal = document.getElementById("userStatsModal");
+        const body = document.getElementById("userStatsBody");
+        body.innerHTML = "<p class='stat-value'>Carregando...</p>";
+        modal.style.display = "flex";
+        modal.classList.remove("loaded");
+        const statsRef = doc(db, "userStats", username.toLowerCase());
+        try {
+          const statsSnap = await getDoc(statsRef);
+          if (!statsSnap.exists()) {
+            body.innerHTML = `
+              <h2>${username}</h2>
+              <p class="stat-value error">Sem estatísticas disponíveis.</p>
+            `;
+          } else {
+            const stats = statsSnap.data();
+            body.innerHTML = `
+              <h2>${username}</h2>
+              <div class="stats-grid">
+                <div class="stat-card">
+                  <span class="stat-icon">🎰</span>
+                  <h3>Apostas</h3>
+                  <p class="stat-value">${stats.apostas ?? 0}</p>
+                </div>
+                <div class="stat-card">
+                  <span class="stat-icon">🏆</span>
+                  <h3>Vitórias</h3>
+                  <p class="stat-value">${stats.ganhos ?? 0}</p>
+                </div>
+                <div class="stat-card">
+                  <span class="stat-icon">❌</span>
+                  <h3>Derrotas</h3>
+                  <p class="stat-value">${stats.perdas ?? 0}</p>
+                </div>
+                <div class="stat-card">
+                  <span class="stat-icon">💸</span>
+                  <h3>Total Apostado</h3>
+                  <p class="stat-value">${stats.apostado ?? 0}</p>
+                </div>
+                <div class="stat-card">
+                  <span class="stat-icon">🏅</span>
+                  <h3>Preço Certo Ganhos</h3>
+                  <p class="stat-value">${stats.precoCerto?.ganhos ?? 0}</p>
+                </div>
+              </div>
+            `;
+          }
+          modal.classList.add("loaded");
+        } catch (error) {
+          console.error("Erro ao carregar stats:", error);
+          body.innerHTML = `
+            <h2>${username}</h2>
+            <p class="stat-value error">Erro ao carregar estatísticas.</p>
+          `;
+          modal.classList.add("loaded");
+        }
+      };
+
+      window.closeUserStats = function () {
+        const modal = document.getElementById("userStatsModal");
+        modal.classList.remove("loaded");
+        setTimeout(() => {
+          modal.style.display = "none";
+        }, 200); // Match CSS transition duration
+      };
+
+      carregarRanking();
     </script>
   </body>
 </html>
