@@ -3,118 +3,7 @@
   <head>
     <meta charset="UTF-8" />
     <title>Ranking do Bot do Cavaquinho</title>
-    <style>
-      body {
-        font-family: Arial, sans-serif;
-        background: #181a1b;
-        color: #e0e0e0;
-      }
-      h1 {
-        color: #7fffd4;
-        text-align: center;
-      }
-      table {
-        border-collapse: collapse;
-        width: 100%;
-        max-width: 700px;
-        margin: 2rem auto;
-        background: #23272a;
-      }
-      th,
-      td {
-        border: 1px solid #333;
-        padding: 8px 12px;
-      }
-      th {
-        background: #222e26;
-        color: #7fffd4;
-      }
-      tr:nth-child(even) {
-        background: #23272a;
-      }
-      tr:nth-child(odd) {
-        background: #181a1b;
-      }
-      .searchbar {
-        display: flex;
-        justify-content: center;
-        margin: 2rem 0 1rem 0;
-      }
-      .searchbar input {
-        padding: 8px 12px;
-        border-radius: 4px;
-        border: 1px solid #444;
-        background: #23272a;
-        color: #e0e0e0;
-        width: 250px;
-      }
-      .searchbar button {
-        padding: 8px 16px;
-        border-radius: 4px;
-        border: none;
-        background: #7fffd4;
-        color: #181a1b;
-        font-weight: bold;
-        cursor: pointer;
-        margin-left: 8px;
-      }
-      .notfound {
-        color: #ff6b6b;
-        text-align: center;
-      }
-      .user-stats-modal {
-        display: none;
-        position: fixed;
-        top: 0; left: 0; right: 0; bottom: 0;
-        background: rgba(0,0,0,0.7);
-        z-index: 1000;
-        align-items: center;
-        justify-content: center;
-      }
-      .user-stats-content {
-        background: #23272a;
-        color: #e0e0e0;
-        padding: 2rem 2.5rem;
-        border-radius: 10px;
-        min-width: 300px;
-        max-width: 90vw;
-        box-shadow: 0 0 20px #000;
-        text-align: center;
-        position: relative;
-      }
-      .user-stats-content h2 {
-        color: #7fffd4;
-        margin-bottom: 1rem;
-      }
-      .user-stats-content button {
-        position: absolute;
-        top: 10px;
-        right: 10px;
-        background: #7fffd4;
-        color: #181a1b;
-        border: none;
-        border-radius: 4px;
-        font-weight: bold;
-        padding: 4px 10px;
-        cursor: pointer;
-      }
-      .user-stats-content table {
-        margin: 1rem auto 0 auto;
-        background: none;
-        border: none;
-        width: auto;
-      }
-      .user-stats-content td {
-        border: none;
-        padding: 4px 12px;
-        text-align: left;
-      }
-      .user-link {
-        color: #7fffd4;
-        cursor: pointer;
-        text-decoration: underline;
-      }
-    </style>
+    <link rel="stylesheet" href="dark-theme.css" />
   </head>
   <body>
     <h1>🏆 Ranking dos Utilizadores</h1>
@@ -163,7 +52,7 @@
         collection,
         getDocs,
         doc,
-        getDoc
+        getDoc,
       } from "https://www.gstatic.com/firebasejs/10.11.1/firebase-firestore.js";
 
       const app = initializeApp(firebaseConfig);
@@ -224,7 +113,7 @@
         .addEventListener("input", searchUser);
 
       // Função global para mostrar estatísticas do utilizador
-      window.showUserStats = async function(username) {
+      window.showUserStats = async function (username) {
         const modal = document.getElementById("userStatsModal");
         const body = document.getElementById("userStatsBody");
         body.innerHTML = "<p>A carregar estatísticas...</p>";
@@ -243,13 +132,17 @@
             <tr><td><b>Apostas:</b></td><td>${stats.apostas ?? 0}</td></tr>
             <tr><td><b>Vitórias:</b></td><td>${stats.ganhos ?? 0}</td></tr>
             <tr><td><b>Derrotas:</b></td><td>${stats.perdas ?? 0}</td></tr>
-            <tr><td><b>Total apostado:</b></td><td>${stats.apostado ?? 0}</td></tr>
-            <tr><td><b>Preço Certo ganhos:</b></td><td>${stats.precoCerto?.ganhos ?? 0}</td></tr>
+            <tr><td><b>Total apostado:</b></td><td>${
+              stats.apostado ?? 0
+            }</td></tr>
+            <tr><td><b>Preço Certo ganhos:</b></td><td>${
+              stats.precoCerto?.ganhos ?? 0
+            }</td></tr>
           </table>
         `;
       };
 
-      window.closeUserStats = function() {
+      window.closeUserStats = function () {
         document.getElementById("userStatsModal").style.display = "none";
       };
 
